@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 import '../../utils/custom_style.dart';
 import '../add_user/add_user.dart';
+
+import '../add_year/add_year.dart';
 import 'widgets/choice_add_item.dart';
 
 class ChoiceAdd extends StatelessWidget {
@@ -37,21 +37,24 @@ class ChoiceAdd extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: ChoiceAddItem(
-                title: "Ajouter une année",
-                backColor: CustomStyle.mainColor,
-                onClicked: () {},
-                iconData: FontAwesomeIcons.calendarCheck,
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: ChoiceAddItem(
                 title: "Ajouter un membre",
                 backColor: CustomStyle.secondColor,
                 onClicked: () {
                   Navigator.pushNamed(context, AddUser.path);
                 },
                 iconData: FontAwesomeIcons.users,
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: ChoiceAddItem(
+                title: "Ajouter une année",
+                backColor: CustomStyle.mainColor,
+                onClicked: () {
+              
+                  Navigator.pushNamed(context, AddYear.path);
+                },
+                iconData: FontAwesomeIcons.calendarCheck,
               ),
             ),
           ],

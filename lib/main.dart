@@ -1,12 +1,14 @@
 import 'package:assosc/firebase_options.dart';
-import 'package:assosc/providers/member_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'choice_add/choice_add.dart';
+
+import 'providers/member_provider.dart';
 import 'vue/add_user/add_user.dart';
-import 'vue/add_year/first_step_login.dart';
+import 'vue/add_year/add_year.dart';
+import 'vue/choice_add/choice_add.dart';
+import 'vue/detail_patient/detail_membre.dart';
 import 'vue/home/home.dart';
 import 'vue/login/login.dart';
 
@@ -40,6 +42,9 @@ class MyApp extends StatelessWidget {
           AddUser.path: (context) => const AddUser(),
           ChoiceAdd.path: (context) => const ChoiceAdd(),
           AddYear.path: (context) => const AddYear(),
+          DetailMembre.path: (context) => const DetailMembre(),
+       
+          
         },
       ),
     );
