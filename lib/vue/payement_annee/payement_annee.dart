@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/cotisation_model.dart';
+import '../../providers/member_provider.dart';
 import 'widgets/member_paiment_item.dart';
 import 'widgets/year_item_paiment.dart';
 
@@ -12,6 +15,19 @@ class PayementAnnee extends StatefulWidget {
 
 class _PayementAnneeState extends State<PayementAnnee> {
   int selectedIndex = 0;
+
+@override
+  void initState() {
+    super.initState();
+    // Appel à la fonction de filtrage pour initialiser avec la première année
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final memberProvider = Provider.of<MemberProvider>(context, listen: false);
+      if (memberProvider.years.isNotEmpty) {
+        memberProvider.filterCotisationsByYear(memberProvider.years[selectedIndex]);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,38 +36,50 @@ class _PayementAnneeState extends State<PayementAnnee> {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height / 22,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: YearItemPaiment(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    Year: "2023",
-                    isActive: selectedIndex == index,
-                  ),
+            child: Consumer<MemberProvider>(
+              builder: (context, memberProvider, child) {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: memberProvider.years.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: YearItemPaiment(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                            // Appel à la méthode de filtrage
+                            memberProvider.filterCotisationsByYear(memberProvider.years[index]);
+                          });
+                        },
+                        Year: memberProvider.years[index].toString(),
+                        isActive: selectedIndex == index,
+                      ),
+                    );
+                  },
                 );
               },
             ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Expanded(
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return MemberPaimentItem(
-                  isPaid: index == 2,
+            child: Consumer<MemberProvider>(
+              builder: (context, memberProvider, child) {
+                // Utilisez la liste des cotisations filtrées
+                List<CotisationModel> cotisations = memberProvider.filteredCotisations;
+
+                return ListView.builder(
+                  itemCount: cotisations.length,
+                  itemBuilder: (context, index) {
+                    CotisationModel cotisation = cotisations[index];
+                    return MemberPaimentItem(
+                      cotisation: cotisation,
+                    );
+                  },
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );

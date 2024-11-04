@@ -1,10 +1,11 @@
+import 'package:assosc/models/cotisation_model.dart';
 import 'package:assosc/utils/custom_style.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class MemberPaimentItem extends StatelessWidget {
-  bool isPaid = false;
-  MemberPaimentItem({super.key, this.isPaid = false});
+  CotisationModel cotisation;
+  MemberPaimentItem({super.key, required this.cotisation});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class MemberPaimentItem extends StatelessWidget {
             Flexible(
               flex: 4,
               child: Text(
-                "Mamadou Dian Bah",
+                "${cotisation.prenom} ${cotisation.nom} ",
                 style: TextStyle(
                   color: CustomStyle.night,
                   fontSize: 16,
@@ -56,9 +57,9 @@ class MemberPaimentItem extends StatelessWidget {
             Flexible(
               flex: 1,
               child: Icon(
-                isPaid ? Icons.check_circle_outline : Icons.cancel_rounded,
+                cotisation.isPaid ? Icons.check_circle_outline : Icons.cancel_rounded,
                 size: 30,
-                color: isPaid ? CustomStyle.customBlue : CustomStyle.erroColor,
+                color: cotisation.isPaid  ? CustomStyle.customBlue : CustomStyle.erroColor,
               ),
             )
           ],

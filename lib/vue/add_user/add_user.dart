@@ -28,6 +28,7 @@ class _AddUserState extends State<AddUser> {
   TextEditingController posteController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isLoading = false; // Add loading state
 
   Future pickImageFromGallery() async {
     final returnedImage =
@@ -44,6 +45,10 @@ class _AddUserState extends State<AddUser> {
 
   registerMember() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true; // Set loading state to true
+      });
+
       String id = randomAlphaNumeric(10);
       Map<String, dynamic> memberInfo = {
         "prenom": prenomController.text,
@@ -56,7 +61,6 @@ class _AddUserState extends State<AddUser> {
 
       await DatabaseMethods().addMember(memberInfo, id).then((onValue) {
         showScaffoldMessage(
-          // ignore: use_build_context_synchronously
           context: context,
           message: "Le Membre a été inscrit avec succès.",
           title: "Inscription Réussie",
@@ -70,6 +74,10 @@ class _AddUserState extends State<AddUser> {
           MaterialPageRoute(builder: (context) => const Home()),
           (Route<dynamic> route) => false,
         );
+      }).whenComplete(() {
+        setState(() {
+          isLoading = false; // Set loading state to false after operation
+        });
       });
     }
   }
@@ -77,128 +85,125 @@ class _AddUserState extends State<AddUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: CustomStyle.mainColor,
       body: Stack(
         children: [
           Form(
             key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  width: double.infinity,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: double.infinity,
                   ),
-                  child: SingleChildScrollView(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
                     child: Padding(
                       padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * 0.08,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            CustomTextFieldColumn(
-                              title: "Prénom",
-                              customtextfield: CustomTextFormField(
-                                keyboardType: TextInputType.name,
-                                controller: prenomController,
-                                hintText: 'Ex:Mamadou',
-                                validator: (String? value) =>
-                                    Validations.emptyValidation(value),
-                              ),
+                      child: Column(
+                        children: [
+                          CustomTextFieldColumn(
+                            title: "Prénom",
+                            customtextfield: CustomTextFormField(
+                              keyboardType: TextInputType.name,
+                              controller: prenomController,
+                              hintText: 'Ex:Mamadou',
+                              validator: (String? value) =>
+                                  Validations.emptyValidation(value),
                             ),
-                            CustomTextFieldColumn(
-                              title: "Nom",
-                              customtextfield: CustomTextFormField(
-                                keyboardType: TextInputType.name,
-                                controller: nomController,
-                                hintText: 'Ex:Condé',
-                                validator: (String? value) =>
-                                    Validations.emptyValidation(value),
-                              ),
+                          ),
+                          CustomTextFieldColumn(
+                            title: "Nom",
+                            customtextfield: CustomTextFormField(
+                              keyboardType: TextInputType.name,
+                              controller: nomController,
+                              hintText: 'Ex:Condé',
+                              validator: (String? value) =>
+                                  Validations.emptyValidation(value),
                             ),
-                            CustomTextFieldColumn(
-                              title: "Téléphone",
-                              customtextfield: CustomTextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: telephoneController,
-                                hintText: 'Ex: 622222222',
-                                validator: (String? value) =>
-                                    Validations.contactNumberValidation(value),
-                              ),
+                          ),
+                          CustomTextFieldColumn(
+                            title: "Téléphone",
+                            customtextfield: CustomTextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: telephoneController,
+                              hintText: 'Ex: 622222222',
+                              /*validator: (String? value) =>
+                                  Validations.contactNumberValidation(value),*/
                             ),
-                            CustomTextFieldColumn(
-                              title: "Email",
-                              customtextfield: CustomTextFormField(
-                                keyboardType: TextInputType.name,
-                                controller: emailController,
-                                hintText: 'Ex: mamadouconde@gmail.com',
-                                validator: (String? value) =>
-                                    Validations.emailValidation(value),
-                              ),
+                          ),
+                          CustomTextFieldColumn(
+                            title: "Email",
+                            customtextfield: CustomTextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              controller: emailController,
+                              hintText: 'Ex: mamadouconde@gmail.com',
+                              validator: (String? value) =>
+                                  Validations.emailValidation(value),
                             ),
-                            CustomTextFieldColumn(
-                              title: "Poste",
-                              customtextfield: CustomTextFormField(
-                                keyboardType: TextInputType.name,
-                                controller: posteController,
-                                hintText: 'Ex: Sécrétaire Générale',
-                                validator: (String? value) =>
-                                    Validations.emptyValidation(value),
-                              ),
+                          ),
+                          CustomTextFieldColumn(
+                            title: "Poste",
+                            customtextfield: CustomTextFormField(
+                              keyboardType: TextInputType.name,
+                              controller: posteController,
+                              hintText: 'Ex: Sécrétaire Générale',
+                              validator: (String? value) =>
+                                  Validations.emptyValidation(value),
                             ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                registerMember();
-                              },
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.055,
-                                width: MediaQuery.of(context).size.width * 0.6,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      CustomStyle.secondColor,
-                                      CustomStyle.mainColor,
-                                    ],
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    "Ajouter le membre",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
+                          ),
+                          const SizedBox(height: 30),
+                          GestureDetector(
+                            onTap: () {
+                              registerMember();
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.055,
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    CustomStyle.secondColor,
+                                    CustomStyle.mainColor,
+                                  ],
                                 ),
                               ),
+                              child: Center(
+                                child: isLoading // Check loading state
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text(
+                                        "Ajouter le membre",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                              ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Positioned(

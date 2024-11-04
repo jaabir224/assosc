@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/membre_model.dart';
+import '../models/cotisation_model.dart';
 import '../services/database.dart';
 
 class MemberProvider extends ChangeNotifier {
   List<MembreModel> _members = [];
+  List<CotisationModel> _cotisations = [];
+  List<int> _years = [];
+  List<CotisationModel> _filteredCotisations = []; 
 
   List<MembreModel> get members => _members;
+  List<CotisationModel> get cotisations => _cotisations;
+  List<int> get years => _years;
+  List<CotisationModel> get filteredCotisations => _filteredCotisations; 
 
   MemberProvider() {
     getMembers();
+    getCotisationsWithMembers();
   }
 
   Future<void> getMembers() async {
@@ -27,7 +35,22 @@ class MemberProvider extends ChangeNotifier {
     } catch (e) {
       print("Erreur lors de la récupération des membres : $e");
     }
+  }
 
-    print(_members.length);
+  Future<void> getCotisationsWithMembers() async {
+    _cotisations = await DatabaseMethods().getCotisationsWithMembers();
+    _filteredCotisations =
+        List.from(_cotisations); 
+    _years = _cotisations
+        .map((cotisation) => cotisation.annee)
+        .toSet()
+        .toList();
+    notifyListeners();
+  }
+
+  void filterCotisationsByYear(int year) {
+    _filteredCotisations =
+        _cotisations.where((cotisation) => cotisation.annee == year).toList();
+    notifyListeners(); 
   }
 }

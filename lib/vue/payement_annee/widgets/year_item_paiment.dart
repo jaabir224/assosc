@@ -50,7 +50,7 @@ class YearItemPaiment extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "2023",
+            Year,
             style: TextStyle(
               color: isActive ? Colors.white : CustomStyle.night,
               fontWeight: FontWeight.bold,
