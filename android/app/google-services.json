@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "474161802737",
+    "project_id": "assosc-98fb3",
+    "storage_bucket": "assosc-98fb3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474161802737:android:b264f9f2700ab8b91aa850",
+        "android_client_info": {
+          "package_name": "com.example.assosc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPLAIrnD_Fn8hXvJCFsy2RbzCOIeX5YcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
